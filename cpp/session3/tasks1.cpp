@@ -1,12 +1,8 @@
 /* File Name : tasks1.cpp */
 /* The Author is : AbdelRahman Ahmed Yassin */
 /* The Date Of The File : 2024-07-28 */
-#include <cctype>
 #include<iostream>
-#include <csignal> 
 #include <algorithm>
-#include <climits>
-#include <iostream>
 #include <vector>
 bool is_even(int x){
     return !(x % 2);

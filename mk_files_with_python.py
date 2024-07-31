@@ -13,7 +13,11 @@ def make_file(name_file , name_topic , name_session):
              os.write(fd.fileno(),
           f"/* File Name : {name_file} */\n\
 /* The Author is : AbdelRahman Ahmed Yassin */\n \
-/* The Date Of The File : {date.today()} */".encode())
+/* The Date Of The File : {date.today()} */\
+include<iostream>\
+include <algorithm>\
+include <vector>\
+".encode())
     
     time.sleep(2) 
     os.system(f"code /home/abdel-rahman-yassin/Embedded_Linux_Diploma/{name_topic}/{name_session}/{name_file}")
