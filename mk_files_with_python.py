@@ -13,10 +13,10 @@ def make_file(name_file , name_topic , name_session):
              os.write(fd.fileno(),
           f"/* File Name : {name_file} */\n\
 /* The Author is : AbdelRahman Ahmed Yassin */\n \
-/* The Date Of The File : {date.today()} */\
-include<iostream>\
-include <algorithm>\
-include <vector>\
+/* The Date Of The File : {date.today()} */\n\
+#include<iostream>\n\
+#include <algorithm>\n\
+#include <vector>\n\
 ".encode())
     
     time.sleep(2) 
