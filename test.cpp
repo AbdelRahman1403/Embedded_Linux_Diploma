@@ -1,5 +1,6 @@
 #include <iostream>
 #include <ostream>
+#include <sys/cdefs.h>
 #include <vector>
 #include <algorithm>
 
@@ -36,15 +37,25 @@ std::ostream& operator<<(std::ostream& out, const Integer& X) {
     return out;
 }
 
-int main() {
-    int temp = 10;
-    int &x = temp;
-    int l = x;
+class Shape{
+public:
+    virtual void Draw()  =0;
+};
+class Circle :public Shape{
+public:
+    void Draw () override{std::cout << "This is Circle shape" << std::endl;}
+};
 
-    l = 4;
-    x = 20;
-    std::cout << l << std::endl;
+class Rectangle :public Shape{
+public:
+    void Draw () override{std::cout << "This is Rectangle shape" << std::endl;}
+};
+
+int main() {
+    int &&x = 10;
+    std::cout << &x << std::endl;
+    int *a = &x;
+    *a = 50;
     std::cout << x << std::endl;
-    std::cout << temp << std::endl;
     return 0;
 }
