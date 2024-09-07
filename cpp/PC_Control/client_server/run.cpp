@@ -18,6 +18,8 @@ int main(){
     else{
         std::cerr << "not suddefell\n";
     }
-    cs.send_string_to_the_server();
-    cs.receive_string_from_the_server();
+    while(1){
+        cs.send_string_to_the_server();
+        cs.receive_string_from_the_server();
+    }
 }

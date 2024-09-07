@@ -25,7 +25,7 @@ ClientSocekt() = default;
     void receive_string_from_the_server();
     void close_client_socket();
 ~ClientSocekt() {
-    //close(client_IB);
+    
 }
 };
 #endif
