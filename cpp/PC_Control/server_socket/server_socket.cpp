@@ -1,8 +1,11 @@
 #include "server_socket.hpp"
+#include <algorithm>
 #include <arpa/inet.h>
+#include <cctype>
 #include <netinet/in.h>
 #include <sys/socket.h>
 #include <sys/types.h>
+#include <unistd.h>
 ServerSocket::ServerSocket(){
 
 }
@@ -10,7 +13,6 @@ ServerSocket::~ServerSocket(){
     
 };
 bool ServerSocket::init_server_socket(){
-    std::cout << __FUNCTION__ << std::endl;
     bool ret = 1;
     server_IB = socket(AF_INET, SOCK_STREAM, 0);
     if(server_IB < 0){
@@ -21,21 +23,24 @@ bool ServerSocket::init_server_socket(){
 }
  
 bool ServerSocket::bind_to_specific_port(){
-    std::cout << __FUNCTION__ << std::endl;
-    bool ret = 1;
+    bool ret = true;  // Initial assumption is success
+
     sockaddr_in sock_addr;
-    sock_addr.sin_port = htons(8888);
-    sock_addr.sin_family = AF_INET;
-    inet_pton(AF_INET, "127.0.0.1", &sock_addr.sin_addr);
-    if(bind(server_IB , (sockaddr*)&sock_addr , sizeof(sock_addr)) < 0){
+    sock_addr.sin_family = AF_INET;          // IPv4
+    sock_addr.sin_port = htons(8888);        // Port 8888 in network byte order
+    sock_addr.sin_addr.s_addr = INADDR_ANY;  // Accept connections from any IP address
+
+    // Bind the socket to the IP and port
+    if (bind(server_IB, (sockaddr*)&sock_addr, sizeof(sock_addr)) < 0) {
         std::cerr << "Cannot bind to the port" << std::endl;
-        ret = -1;
+        ret = false;  // Binding failed
     }
-    return ret;
+
+    return ret;  // Return success or failure
 }
+
  
 bool ServerSocket::listening_the_socket(){
-    std::cout << __FUNCTION__ << std::endl;
     bool ret = 1;
     if(listen(server_IB, 2) < 0){
         std::cerr << "Cannot listen" << std::endl;
@@ -45,7 +50,6 @@ bool ServerSocket::listening_the_socket(){
 }
  
 bool ServerSocket::accept_the_connection(){
-    std::cout << __FUNCTION__ << std::endl;
     bool ret = 1;
     sockaddr_in client;
     socklen_t size_client = sizeof(client);
@@ -58,27 +62,46 @@ bool ServerSocket::accept_the_connection(){
 }
  
 void ServerSocket::send_data_to_client(const std::string &message){
-    std::cout << __FUNCTION__ << std::endl;
     send(client_IB , message.data() , message.length() , 0);
 }
  
-void ServerSocket::receive_data_from_client(){
-    std::cout << __FUNCTION__ << std::endl;
+std::string ServerSocket::receive_data_from_client(){
+    // Receive data from client, return_string holds the number of bytes received
     ssize_t return_string = recv(client_IB, static_cast<void*>(buffer.data()), buffer.size(), 0);
 
-    if(return_string < 0){
-        std::cout << "Error , not receive\n";
+    // Check for error in receiving data
+    if (return_string < 0) {
+        std::cerr << "Error, data not received" << std::endl;
+        return "ERROR";
     }
-    else if (return_string == 0){
-        std::cout << "The user close the connection\n";
+    // Check if the client has closed the connection
+    else if (return_string == 0) {
+        std::cerr << "Client closed the connection" << std::endl;
+        return "CLOSED";
     }
-    else{
-        std::string buffer_recive(buffer.data() , return_string);
-        std::cout << "The return data is : " << buffer_recive << std::endl;
-    }
+    
+    // Create a string from the received buffer
+    std::string buffer_receive(buffer.data(), return_string);
+    
+    // Print the received data for debugging
+    std::cout << "The return data is: " << buffer_receive << std::endl;
+    
+    return buffer_receive;
 }
+
  
 void ServerSocket::close_socket(){
-    std::cout << __FUNCTION__ << std::endl;
+    client_IB = -1;
+    if(client_IB != -1){
+        close(client_IB);
+    }
 }
- 
+void ServerSocket::close_listening(){
+        close(server_IB);
+}
+
+void ServerSocket::trim(std::string &str){
+    str.erase(std::find_if(str.rbegin() , str.rend() ,[](unsigned char ch){
+       return !std::isspace(ch); 
+    }).base() , str.end());
+}

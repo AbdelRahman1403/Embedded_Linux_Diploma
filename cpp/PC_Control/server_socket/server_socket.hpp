@@ -4,6 +4,7 @@
 #include<iostream>
 #include <string.h>
 #include <cstring>
+#include <string>
 #include <unistd.h>
 #include <sys/socket.h>
 #include <sys/types.h>
@@ -19,12 +20,14 @@ std::array<char, 5000>buffer;
 public:
 ServerSocket();
 ~ServerSocket();
+void trim(std::string &str);
 bool init_server_socket();
 bool bind_to_specific_port();
 bool listening_the_socket();
 bool accept_the_connection();
 void send_data_to_client(const std::string &message);
-void receive_data_from_client();
+std::string receive_data_from_client();
 void close_socket();
+void close_listening();
 };
 #endif

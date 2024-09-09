@@ -12,7 +12,7 @@ bool ClientSocekt::connect_to_the_server(){
     memset(&socket_adrr, 0, sizeof(socket_adrr));
     socket_adrr.sin_family = AF_INET;
     socket_adrr.sin_port = htons(8888);
-    socket_adrr.sin_addr.s_addr = inet_addr("127.0.0.1");
+    socket_adrr.sin_addr.s_addr = inet_addr("192.168.1.2");
     return connect(client_IB, (struct sockaddr*)&socket_adrr, sizeof(socket_adrr));
 }
 
@@ -22,7 +22,7 @@ void ClientSocekt::send_string_to_the_server(){
     std::cout << "Enter The Message : ";
     getline(std::cin, buffer); 
     //send(client_IB, buffer, buffer.size() , 0);
-    send(client_IB, buffer.data(), buffer.size(), 0);
+    send(client_IB, buffer.data(), buffer.size(), 1);
 }
 
 void ClientSocekt::receive_string_from_the_server(){
