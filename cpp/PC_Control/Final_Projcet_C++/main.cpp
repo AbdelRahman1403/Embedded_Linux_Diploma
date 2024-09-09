@@ -9,8 +9,6 @@ int main() {
 
     if (server.init_server_socket()) {
         std::cerr << "Server initialization success" << std::endl;
-        
-
     }
     else{
         std::cout << "Fieled init" << std::endl;
@@ -36,12 +34,11 @@ int main() {
         if (server.accept_the_connection()) {
             std::cout << "Client connected." << std::endl;
             server.send_data_to_client("/--------------------/\n");
-            server.send_data_to_client("menu\n");
             server.send_data_to_client("Enter a command or type 'exit' to quit\n");
 
             while (true) {
                 buffer = server.receive_data_from_client();
-
+                server.trim(buffer);
                 if (buffer == "exit") {
                     server.send_data_to_client("Exiting the server...\n");
                     server.close_socket();
@@ -50,14 +47,30 @@ int main() {
                 }
 
                 else if (buffer == "terminal") {
-                    buffer = cmd.open_terminal();
-                    //server.send_data_to_client(buffer);
+                    cmd.open_terminal();
+                    server.send_data_to_client(buffer);
                     buffer = "nothing"; // Reset buffer for next read
                 }
 
                 else if (buffer == "calc") {
-                    cmd.open_calculator();
-                    //server.send_data_to_client(buffer);
+                    std::cout << "Entire fucntion in the main file" << std::endl;
+                    buffer = cmd.open_calculator();
+                    server.send_data_to_client(buffer);
+                    buffer = "nothing"; // Reset buffer for next read
+                }
+                else if (buffer == "chrome"){
+                    buffer = cmd.open_chorme();
+                    server.send_data_to_client(buffer);
+                    buffer = "nothing"; // Reset buffer for next read
+                }
+                else if (buffer == "linkedin" || buffer == "Linkedin"){
+                    buffer = cmd.open_linkedin();
+                    server.send_data_to_client(buffer);
+                    buffer = "nothing"; // Reset buffer for next read
+                }
+                else if (buffer == "YouTube" || buffer == "youtube"){
+                    buffer = cmd.open_youtube();
+                    server.send_data_to_client(buffer);
                     buffer = "nothing"; // Reset buffer for next read
                 }
             }
